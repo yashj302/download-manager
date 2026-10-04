@@ -1,0 +1,39 @@
+{
+  "name": "idm-clone",
+  "productName": "IDM Clone",
+  "version": "1.0.0",
+  "description": "Desktop download manager with segmented downloads and a browser extension that captures downloads.",
+  "author": "yash",
+  "main": "src/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test:engine": "node scripts/selftest.js",
+    "dist": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "^35.7.5",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.idm.clone",
+    "productName": "IDM Clone",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "renderer/**/*",
+      "extension/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "assets/icon.png"
+    },
+    "portable": {
+      "artifactName": "IDM-Clone-${version}.exe"
+    }
+  }
+}

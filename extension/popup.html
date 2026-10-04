@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IDM Clone</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <strong>IDM Clone</strong>
+    <span id="status">Checking the app…</span>
+  </header>
+  <label class="check"><input id="enabled" type="checkbox" /> Capture browser downloads</label>
+  <label for="port">Port</label>
+  <input id="port" type="number" min="1024" max="65535" />
+  <label for="token">Integration token</label>
+  <input id="token" type="text" placeholder="Paste the token from the app" spellcheck="false" />
+  <label for="minBytes">Ignore files smaller than</label>
+  <select id="minBytes">
+    <option value="0">Any size</option>
+    <option value="102400">100 KB</option>
+    <option value="512000">500 KB</option>
+    <option value="1048576">1 MB</option>
+    <option value="5242880">5 MB</option>
+  </select>
+  <button id="save" type="button">Save and test</button>
+  <p id="message"></p>
+  <script src="popup.js"></script>
+</body>
+</html>

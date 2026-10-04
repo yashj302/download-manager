@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IDM Clone</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#4c8dff"/><path d="M16 7v11" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M10 14.5 16 22l6-7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <strong>IDM Clone</strong>
+          <span>Download manager</span>
+        </div>
+      </div>
+      <nav class="nav" id="nav">
+        <button class="nav-item active" data-filter="all">All downloads</button>
+        <button class="nav-item" data-filter="downloading">Downloading</button>
+        <button class="nav-item" data-filter="queued">Queued</button>
+        <button class="nav-item" data-filter="paused">Paused</button>
+        <button class="nav-item" data-filter="completed">Completed</button>
+        <button class="nav-item" data-filter="error">Failed</button>
+        <div class="nav-label">Categories</div>
+        <button class="nav-item" data-filter="video">Video</button>
+        <button class="nav-item" data-filter="music">Music</button>
+        <button class="nav-item" data-filter="programs">Programs</button>
+        <button class="nav-item" data-filter="archives">Archives</button>
+        <button class="nav-item" data-filter="documents">Documents</button>
+        <button class="nav-item" data-filter="images">Images</button>
+        <button class="nav-item" data-filter="other">Other</button>
+      </nav>
+      <button class="nav-item settings-link" data-filter="settings" id="settingsNav">Browser &amp; settings</button>
+      <div class="server-pill" id="serverPill">Starting…</div>
+    </aside>
+
+    <main class="main">
+      <section id="listView">
+        <header class="topbar">
+          <div>
+            <h1 id="viewTitle">All downloads</h1>
+            <p id="viewStats">No downloads yet</p>
+          </div>
+          <div class="actions">
+            <button class="btn primary" id="addBtn">Add URL</button>
+            <button class="btn" id="pauseAllBtn">Pause all</button>
+            <button class="btn" id="resumeAllBtn">Resume all</button>
+            <button class="btn" id="clearBtn">Clear finished</button>
+          </div>
+        </header>
+        <div class="search-row">
+          <input id="search" type="search" placeholder="Search by file name or URL" />
+        </div>
+        <div class="list" id="list"></div>
+      </section>
+
+      <section id="settingsView" hidden>
+        <header class="topbar">
+          <div>
+            <h1>Settings</h1>
+            <p>Save folder, speed, and the browser extension that catches downloads.</p>
+          </div>
+        </header>
+        <div class="settings-grid">
+          <form id="settingsForm" class="card">
+            <h2>Downloads</h2>
+            <label>Save files to</label>
+            <div class="folder-row">
+              <input id="downloadDir" type="text" readonly />
+              <button class="btn" id="browseBtn" type="button">Browse</button>
+            </div>
+            <div class="split">
+              <div>
+                <label for="connections">Connections per file</label>
+                <input id="connections" type="number" min="1" max="32" />
+                <small>Most connections used per file. Free connections take over half of the slowest remaining part, and the count backs off if the server limits it.</small>
+              </div>
+              <div>
+                <label for="maxConcurrent">Downloads at once</label>
+                <input id="maxConcurrent" type="number" min="1" max="8" />
+              </div>
+            </div>
+            <label class="check"><input id="resumeOnLaunch" type="checkbox" /> Resume unfinished downloads when the app opens</label>
+            <label class="check"><input id="notifyOnComplete" type="checkbox" /> Notify when a download finishes</label>
+            <label class="check"><input id="closeToTray" type="checkbox" /> Close button hides the window and keeps downloads running</label>
+            <div class="form-actions">
+              <button class="btn primary" type="submit">Save settings</button>
+            </div>
+          </form>
+
+          <div class="card">
+            <h2>Browser extension</h2>
+            <p class="lede">Load this once in Chrome or Edge. When the app is running, file downloads are pulled in here. If the app is closed, the browser downloads as usual.</p>
+            <ol class="steps">
+              <li>Open <strong>chrome://extensions</strong> or <strong>edge://extensions</strong>.</li>
+              <li>Turn on <strong>Developer mode</strong>.</li>
+              <li>Click <strong>Load unpacked</strong> and choose the extension folder.</li>
+              <li>Paste the token below into the extension popup.</li>
+            </ol>
+            <label>Extension folder</label>
+            <div class="folder-row">
+              <input id="extensionPath" type="text" readonly />
+              <button class="btn" id="copyPathBtn" type="button">Copy</button>
+              <button class="btn" id="openExtBtn" type="button">Show</button>
+            </div>
+            <label for="port">Local port</label>
+            <input id="port" type="number" min="1024" max="65535" />
+            <label>Integration token</label>
+            <div class="folder-row">
+              <input id="token" type="text" readonly />
+              <button class="btn" id="copyTokenBtn" type="button">Copy</button>
+              <button class="btn danger" id="regenBtn" type="button">New token</button>
+            </div>
+            <p class="hint" id="serverHint"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="detail" id="detail">
+      <div class="detail-empty">Select a download to see its details.</div>
+    </aside>
+  </div>
+
+  <dialog id="addDialog">
+    <form method="dialog" id="addForm">
+      <h2>Add download</h2>
+      <p>Paste one or more file URLs. The app picks up the file name from the server when it can.</p>
+      <label for="urls">URL</label>
+      <textarea id="urls" rows="5" placeholder="https://example.com/file.zip" required></textarea>
+      <label for="filename">File name (optional)</label>
+      <input id="filename" type="text" placeholder="Leave blank to detect it" />
+      <div class="dialog-actions">
+        <button class="btn" value="cancel" type="submit">Cancel</button>
+        <button class="btn primary" id="startBtn" value="default" type="submit">Start download</button>
+      </div>
+      <p class="form-error" id="addError" hidden></p>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
